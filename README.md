@@ -1,6 +1,6 @@
 # Poi
 
-Poi is a useful temporary file manager 🍭🗑⚔️ .
+Poi is a useful temporary file manager 🍭🗑⚔️
 
 ## Author
 
