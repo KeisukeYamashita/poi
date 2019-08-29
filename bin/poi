@@ -1,11 +1,7 @@
 #!/bin/bash
 
 readonly root_dir=$(git rev-parse --show-toplevel)
-source $root_dir/bin/help
-source $root_dir/bin/ls
-
 readonly default_poi_dir=$HOME/.poi
-
 
 _load_poi_config(){
     if [ -z "${POI_DIR}" ]; then
@@ -49,6 +45,39 @@ _parse(){
     done
 }
 
+_findFile(){
+    case "$1" in
+        help|--help)
+            helpLsCommand
+            exit 1
+            ;;
+        -t|--tag)
+            tag=$2
+            shift 2
+            ;;
+        --title)
+            title=$2
+            shift 2
+            ;;
+        --interactive)
+            interactive=1
+            shift
+            ;;
+        -*|--*)
+            echo "Error, no such option" >&2
+            exit 1
+            ;;
+    esac
+
+    if [[ -n "$title" ]]; then
+        files=$(ls -1 $poi_dir/tmp/ | egrep -e $title)
+    elif [[ -n "$tag" ]]; then
+        files=$(ls -1 $poi_dir/tmp/ | egrep -e $tag)
+    else 
+        files=$(ls -1 $poi_dir/tmp/)
+    fi
+}
+
 poi(){
     if [ -z "$title" ]; then
         title=noname
@@ -63,13 +92,39 @@ poi(){
 }
 
 lsPoi(){
-    echo -e "Title\t\t\tDatetime"
-    for file in $poi_dir/tmp/*; do
-        datetime=$(basename $file | sed -e 's/\(.*\)-\(.*\)/\1 \2/' | awk '{print $1}')
+    _findFile $@
+    if [[ -z $files ]]; then
+        echo "No files found"
+        exit 0
+    fi
+
+    echo -e "Title\tDatetime\t\tTags"
+    for file in $files; do
+        datetime=$(basename $file |  sed -e 's/\(.*\)-\(.*\)/\1 \2/' | awk '{print $1}')
         datetime_unix=$(date -jf '%Y_%m_%d_%H_%M_%S' $datetime +%s)
         filename=$(basename $file | sed -e 's/\(.*\)-\(.*\)/\1 \2/' | awk '{print $2}')
-        echo -e "$datetime\t$filename"
+        echo -e "$filename\t"$(date -r $datetime_unix '+%Y/%m/%d %H:%M:%S')""
     done
+}
+
+catPoi(){
+    _findFile $@
+    if [[ -z $files ]]; then
+        echo "No files found"
+        exit 0
+    fi
+
+    len=$(echo $files | wc -l)
+    if [[ $len -eq 1 ]]; then
+        echo "hoge"
+    else
+        if [[ ! $interactive -eq 1 ]]; then
+            echo "Error multifile"
+            exit 1
+        else
+            echo "no"
+        fi
+    fi
 }
 
 helpPoi() {
@@ -115,7 +170,21 @@ shoWHelp
 helpPoiCommand(){
     cat <<-shoWPoiHelp
         Name
-            poi poi - stores tmp file
+            poi poi - list tmp file
+
+        Synopsis
+            SOME_STDOUT | poi poi
+
+        Flags
+            --title     - add title
+            -t, --tag   - add tag   
+shoWPoiHelp
+}
+
+helpLsCommand(){
+    cat <<-shoWPoiHelp
+        Name
+            poi ls - stores tmp file
 
         Synopsis
             SOME_STDOUT | poi poi
@@ -143,7 +212,11 @@ main(){
             ;;
         ls)
             shift
-            lsPoi
+            lsPoi $@
+            ;;
+        cat)
+            shift
+            catPoi $@
             ;;
         sweep)
             shift
