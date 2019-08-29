@@ -62,34 +62,102 @@ poi(){
     echo "Poied $title"
 }
 
-_load_poi_config
-CMD=${1}
+lsPoi(){
+    echo -e "Title\t\t\tDatetime"
+    for file in $poi_dir/tmp/*; do
+        datetime=$(basename $file | sed -e 's/\(.*\)-\(.*\)/\1 \2/' | awk '{print $1}')
+        datetime_unix=$(date -jf '%Y_%m_%d_%H_%M_%S' $datetime +%s)
+        filename=$(basename $file | sed -e 's/\(.*\)-\(.*\)/\1 \2/' | awk '{print $2}')
+        echo -e "$datetime\t$filename"
+    done
+}
 
-if [ -z "${CMD}" ]; then
-    echo "Error: no command specified" >&2
-    exit 1
-fi
+helpPoi() {
+    cat <<-shoWHelp
+        Name
+            Poi is a useful temporary file manager 🍭 🗑 ⚔️
 
-case ${CMD} in
-    poi)
-        shift
-        _parse $@
-        poi
-        ;;
-    ls)
-        shift
-        lsPoi
-        ;;
-    sweep)
-        shift
-        mv $poi_dir/tmp/* $poi_dir/trash
-        ;;
-    help)
-        helpPoi
-        exit 0
-        ;;
-    *)
-        echo "Error: no command found ${CMD}" >&2
+        Synopsis
+            poi COMMAND
+
+        COMMANDs:
+            [Store tmp file]
+             
+                curl -s "www.google.com" | poi poi --title google_page --tag html,google
+
+            [Restore tmp file: command mode]
+
+                poi find SUM_COMMAND google_page
+
+            [Search file: command mode]
+
+                poi find SUM_COMMAND googl
+            
+            [Search by tag: command mode]
+
+                poi find SUM_COMMAND html
+            
+            [Search by file: interactive mode]
+
+                poi find SUM_COMMAND -i
+
+            [Search by tag: interactve mode]
+
+                poi find SUM_COMMAND -i
+
+            [Show help]
+
+                poi help
+        
+shoWHelp
+}
+
+helpPoiCommand(){
+    cat <<-shoWPoiHelp
+        Name
+            poi poi - stores tmp file
+
+        Synopsis
+            SOME_STDOUT | poi poi
+
+        Flags
+            --title     - add title
+            -t, --tag   - add tag   
+shoWPoiHelp
+}
+
+main(){
+    _load_poi_config
+    CMD=${1}
+
+    if [ -z "${CMD}" ]; then
+        echo "Error: no command specified" >&2
         exit 1
-        ;;
-esac
+    fi
+
+    case ${CMD} in
+        poi)
+            shift
+            _parse $@
+            poi
+            ;;
+        ls)
+            shift
+            lsPoi
+            ;;
+        sweep)
+            shift
+            mv $poi_dir/tmp/* $poi_dir/trash
+            ;;
+        help)
+            helpPoi
+            exit 0
+            ;;
+        *)
+            echo "Error: no command found ${CMD}" >&2
+            exit 1
+            ;;
+    esac
+}
+
+main $@
