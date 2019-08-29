@@ -71,11 +71,29 @@ _findFile(){
 
     if [[ -n "$title" ]]; then
         files=$(ls -1 $poi_dir/tmp/ | egrep -e $title)
+        count=$(ls -1 $poi_dir/tmp/ | egrep -e $title | wc -l)
     elif [[ -n "$tag" ]]; then
         files=$(ls -1 $poi_dir/tmp/ | egrep -e $tag)
+        count=$(ls -1 $poi_dir/tmp/ | egrep -e $tag | wc -l)
     else 
         files=$(ls -1 $poi_dir/tmp/)
+        count=$(ls -1 $poi_dir/tmp/ | wc -l)
     fi
+}
+
+_output_files(){
+    if [[ -z $files ]]; then
+        echo "No files found"
+        exit 0
+    fi
+
+    echo -e "Title\tDatetime\t\tFileID\t\t\t\tTags"
+    for file in $files; do
+        datetime=$(basename $file |  sed -e 's/\(.*\)-\(.*\)/\1 \2/' | awk '{print $1}')
+        datetime_unix=$(date -jf '%Y_%m_%d_%H_%M_%S' $datetime +%s)
+        filename=$(basename $file | sed -e 's/\(.*\)-\(.*\)/\1 \2/' | awk '{print $2}')
+        echo -e "$filename\t"$(date -r $datetime_unix '+%Y/%m/%d %H:%M:%S')"\t$file"
+    done
 }
 
 poi(){
@@ -93,33 +111,34 @@ poi(){
 
 lsPoi(){
     _findFile $@
-    if [[ -z $files ]]; then
-        echo "No files found"
-        exit 0
-    fi
 
-    echo -e "Title\tDatetime\t\tTags"
-    for file in $files; do
-        datetime=$(basename $file |  sed -e 's/\(.*\)-\(.*\)/\1 \2/' | awk '{print $1}')
-        datetime_unix=$(date -jf '%Y_%m_%d_%H_%M_%S' $datetime +%s)
-        filename=$(basename $file | sed -e 's/\(.*\)-\(.*\)/\1 \2/' | awk '{print $2}')
-        echo -e "$filename\t"$(date -r $datetime_unix '+%Y/%m/%d %H:%M:%S')""
-    done
+    _output_files
 }
 
+
 catPoi(){
-    _findFile $@
+    case "$1" in
+        -*|--*)
+            _findFile $@
+            ;;
+        *)
+            if [[ -n "$1" ]]; then
+                cat $poi_dir/tmp/$1
+            fi
+            ;;
+    esac
     if [[ -z $files ]]; then
         echo "No files found"
         exit 0
     fi
 
     len=$(echo $files | wc -l)
-    if [[ $len -eq 1 ]]; then
-        echo "hoge"
+    if [[ $counts -eq 1 ]]; then
+        echo "Hoge"
     else
         if [[ ! $interactive -eq 1 ]]; then
-            echo "Error multifile"
+            echo -e "Error multiple file\n"
+            _output_files
             exit 1
         else
             echo "no"
