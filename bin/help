@@ -1,0 +1,35 @@
+help(){
+    echo<<-shoWHelp
+        Poi is a useful temporary file manager 🍭🗑⚔️
+
+        Usage:
+            [Store tmp file]
+             
+                curl -s "www.google.com" | poi --title google_page --tag html,google
+
+            [Restore tmp file: command mode]
+
+                poi find title google_page
+
+            [Search file: command mode]
+
+                poi find title googl
+            
+            [Search by tag: command mode]
+
+                poi find tag html
+            
+            [Search by file: interactive mode]
+
+                poi find title -i
+
+            [Search by tag: interactve mode]
+
+                poi find tag -i
+
+            [Show help]
+
+                poi help
+        
+shoWHelp
+}

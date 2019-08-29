@@ -1,0 +1,40 @@
+#!/bin/bash
+
+poi(){
+    while (( "$#" )); do
+        echo $#
+        case "$1" in
+            -*|--*)
+                case "$1" in
+                    -t|--tag)
+                        echo "tag"
+                        ;;
+                    --title)
+                        echo "title"
+                        ;;
+                    *)
+                        echo "Error: no option ${1}" >&2
+                        exit 1
+                        ;;
+                esac
+                shift 2
+                ;;
+            *)
+                echo "Error: no command found ${CMD}" >&2
+                exit 1
+                ;;
+        esac
+    done
+}
+
+CMD=${1}
+case ${CMD} in
+    poi)
+        shift
+        poi $@
+        ;;
+    *)
+        echo "Error: no command found ${CMD}" >&2
+        exit 1
+        ;;
+esac
