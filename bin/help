@@ -1,35 +1,53 @@
-help(){
-    echo<<-shoWHelp
-        Poi is a useful temporary file manager 🍭🗑⚔️
+helpPoi() {
+    cat <<-shoWHelp
+        Name
+            Poi is a useful temporary file manager 🍭 🗑 ⚔️
 
-        Usage:
+        Synopsis
+            poi COMMAND
+
+        COMMANDs:
             [Store tmp file]
              
-                curl -s "www.google.com" | poi --title google_page --tag html,google
+                curl -s "www.google.com" | poi poi --title google_page --tag html,google
 
             [Restore tmp file: command mode]
 
-                poi find title google_page
+                poi find SUM_COMMAND google_page
 
             [Search file: command mode]
 
-                poi find title googl
+                poi find SUM_COMMAND googl
             
             [Search by tag: command mode]
 
-                poi find tag html
+                poi find SUM_COMMAND html
             
             [Search by file: interactive mode]
 
-                poi find title -i
+                poi find SUM_COMMAND -i
 
             [Search by tag: interactve mode]
 
-                poi find tag -i
+                poi find SUM_COMMAND -i
 
             [Show help]
 
                 poi help
         
 shoWHelp
+}
+
+helpPoiCommand(){
+    cat <<-shoWPoiHelp
+        Name
+            poi poi - stores tmp file
+
+        Synopsis
+            SOME_STDOUT | poi poi
+
+        Flags
+            --title     - add title
+            -t, --tag   - add tag   
+shoWPoiHelp
 }

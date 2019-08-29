@@ -1,7 +1,8 @@
 #!/bin/bash
 
 readonly root_dir=$(git rev-parse --show-toplevel)
-source $root_dir/bin/{find,help}
+source $root_dir/bin/help
+source $root_dir/bin/ls
 
 readonly default_poi_dir=$HOME/.poi
 
@@ -36,6 +37,10 @@ _parse(){
                 esac
                 shift 2
                 ;;
+            help)
+                helpPoiCommand
+                exit 1
+                ;;
             *)
                 echo "Error: no command found ${CMD}" >&2
                 exit 1
@@ -54,7 +59,7 @@ poi(){
         echo $line >> $poi_dir/tmp/$filename
     done
 
-    echo "Poied to $poi_dir/tmp/$filename"
+    echo "Poied $title"
 }
 
 _load_poi_config
@@ -71,12 +76,16 @@ case ${CMD} in
         _parse $@
         poi
         ;;
+    ls)
+        shift
+        lsPoi
+        ;;
     sweep)
         shift
-        cp -r $poi_dir/tmp/* $poi_dir/trash
+        mv $poi_dir/tmp/* $poi_dir/trash
         ;;
     help)
-        help
+        helpPoi
         exit 0
         ;;
     *)

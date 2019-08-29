@@ -1,0 +1,10 @@
+#!/bin/bash
+
+lsPoi(){
+    echo -e "Title\t\t\tDatetime"
+    for file in $poi_dir/tmp/*; do
+        datetime=$(basename $file | sed -e 's/\(.*\)-\(.*\)/\1 \2/' | awk '{print $1}')
+        filename=$(basename $file | sed -e 's/\(.*\)-\(.*\)/\1 \2/' | awk '{print $2}')
+        echo -e "$datetime\t$filename"
+    done
+}
