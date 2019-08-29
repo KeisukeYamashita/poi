@@ -1,16 +1,33 @@
 #!/bin/bash
 
-poi(){
+readonly root_dir=$(git rev-parse --show-toplevel)
+source $root_dir/bin/{find,help}
+
+readonly default_poi_dir=$HOME/.poi
+
+
+_load_poi_config(){
+    if [ -z "${POI_DIR}" ]; then
+        poi_dir=$default_poi_dir
+    else
+        poi_dir=${POI_DIR}
+    fi
+
+    if [ ! -d $poi_dir ]; then
+        mkdir -p $poi_dir/{tmp,trash}
+    fi
+}
+
+_parse(){
     while (( "$#" )); do
-        echo $#
         case "$1" in
             -*|--*)
                 case "$1" in
                     -t|--tag)
-                        echo "tag"
+                        tag=$2
                         ;;
                     --title)
-                        echo "title"
+                        title=$2
                         ;;
                     *)
                         echo "Error: no option ${1}" >&2
@@ -27,11 +44,40 @@ poi(){
     done
 }
 
+poi(){
+    if [ -z "$title" ]; then
+        title=noname
+    fi
+    filename=$(date +%Y_%m_%d_%H_%M_%S)-$title
+
+    while read line; do
+        echo $line >> $poi_dir/tmp/$filename
+    done
+
+    echo "Poied to $poi_dir/tmp/$filename"
+}
+
+_load_poi_config
 CMD=${1}
+
+if [ -z "${CMD}" ]; then
+    echo "Error: no command specified" >&2
+    exit 1
+fi
+
 case ${CMD} in
     poi)
         shift
-        poi $@
+        _parse $@
+        poi
+        ;;
+    sweep)
+        shift
+        cp -r $poi_dir/tmp/* $poi_dir/trash
+        ;;
+    help)
+        help
+        exit 0
         ;;
     *)
         echo "Error: no command found ${CMD}" >&2
