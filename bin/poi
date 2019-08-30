@@ -110,7 +110,7 @@ poi(){
     echo "Poied $title"
 }
 
-sak(){
+pui(){
     filename=$(cat $poi_dir/refs/HEAD)
     cat $filename;
 }
@@ -237,9 +237,9 @@ main(){
             _parse $@
             poi
             ;;
-        sak)
+        pui)
             shift
-            sak
+            pui
             ;;
         ls)
             shift
@@ -252,6 +252,11 @@ main(){
         sweep)
             shift
             mv $poi_dir/tmp/* $poi_dir/trash
+            ;;
+        clear)
+            shift
+            mv $poi_dir/tmp/* $poi_dir/trash
+            rm -rf $poi_dir/trash
             ;;
         help)
             helpPoi
