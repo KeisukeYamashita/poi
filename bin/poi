@@ -87,13 +87,25 @@ _output_files(){
         exit 0
     fi
 
-    echo -e "Title\tDatetime\t\tFileID\t\t\t\tTags"
-    for file in $files; do
-        datetime=$(basename $file |  sed -e 's/\(.*\)-\(.*\)/\1 \2/' | awk '{print $1}')
-        datetime_unix=$(date -jf '%Y_%m_%d_%H_%M_%S' $datetime +%s)
-        filename=$(basename $file | sed -e 's/\(.*\)-\(.*\)/\1 \2/' | awk '{print $2}')
-        echo -e "$filename\t"$(date -r $datetime_unix '+%Y/%m/%d %H:%M:%S')"\t$file"
-    done
+    if [[ $interactive -eq 1 ]]; then
+        for file in $files; do
+            timestamp=$(date +%s)
+            datetime=$(basename $file |  sed -e 's/\(.*\)-\(.*\)/\1 \2/' | awk '{print $1}')
+            datetime_unix=$(date -jf '%Y_%m_%d_%H_%M_%S' $datetime +%s)
+            filename=$(basename $file | sed -e 's/\(.*\)-\(.*\)/\1 \2/' | awk '{print $2}')
+            echo -e "$filename\t"$(date -r $datetime_unix '+%Y/%m/%d %H:%M:%S')"\t$file" >> $poi_dir/refs/$timestamp
+        done
+        cat $poi_dir/refs/$timestamp | fzf
+        rm $poi_dir/refs/$timestamp
+    else
+        echo -e "Title\tDatetime\t\tFileID\t\t\t\tTags"
+        for file in $files; do
+            datetime=$(basename $file |  sed -e 's/\(.*\)-\(.*\)/\1 \2/' | awk '{print $1}')
+            datetime_unix=$(date -jf '%Y_%m_%d_%H_%M_%S' $datetime +%s)
+            filename=$(basename $file | sed -e 's/\(.*\)-\(.*\)/\1 \2/' | awk '{print $2}')
+            echo -e "$filename\t"$(date -r $datetime_unix '+%Y/%m/%d %H:%M:%S')"\t$file"
+        done
+    fi
 }
 
 poi(){
@@ -117,7 +129,6 @@ pui(){
 
 lsPoi(){
     _findFile $@
-
     _output_files
 }
 
