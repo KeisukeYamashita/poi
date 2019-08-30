@@ -11,7 +11,7 @@ _load_poi_config(){
     fi
 
     if [ ! -d $poi_dir ]; then
-        mkdir -p $poi_dir/{tmp,trash}
+        mkdir -p $poi_dir/{tmp,trash,refs}
     fi
 }
 
@@ -106,7 +106,13 @@ poi(){
         echo $line >> $poi_dir/tmp/$filename
     done
 
+    echo $poi_dir/tmp/$filename > $poi_dir/refs/HEAD
     echo "Poied $title"
+}
+
+sak(){
+    filename=$(cat $poi_dir/refs/HEAD)
+    cat $filename;
 }
 
 lsPoi(){
@@ -230,6 +236,10 @@ main(){
             shift
             _parse $@
             poi
+            ;;
+        sak)
+            shift
+            sak
             ;;
         ls)
             shift
