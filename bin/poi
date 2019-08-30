@@ -93,9 +93,13 @@ _output_files(){
             datetime=$(basename $file |  sed -e 's/\(.*\)-\(.*\)/\1 \2/' | awk '{print $1}')
             datetime_unix=$(date -jf '%Y_%m_%d_%H_%M_%S' $datetime +%s)
             filename=$(basename $file | sed -e 's/\(.*\)-\(.*\)/\1 \2/' | awk '{print $2}')
-            echo -e "$filename\t"$(date -r $datetime_unix '+%Y/%m/%d %H:%M:%S')"\t$file" >> $poi_dir/refs/$timestamp
+            echo -e "$filename\t"$(date -r $datetime_unix '+%Y/%m/%d %H:%M:%S')"" >> $poi_dir/refs/$timestamp
         done
-        cat $poi_dir/refs/$timestamp | fzf
+        tmp_selected_file=$(cat $poi_dir/refs/$timestamp | fzf)
+        tmp_filename=$(echo $tmp_selected_file | awk '{print $1}')
+        tmp_date=$(echo $tmp_selected_file | awk '{print $2}')
+        tmp_time=$(echo $tmp_selected_file  | awk '{print $3}')
+        selected_file=$(date -jf '%Y/%m/%d %H:%M:%S' "$tmp_date $tmp_time" +%Y_%m_%d_%H_%M_%S)-$tmp_filename
         rm $poi_dir/refs/$timestamp
     else
         echo -e "Title\tDatetime\t\tFileID\t\t\t\tTags"
@@ -158,9 +162,9 @@ catPoi(){
         if [[ ! $interactive -eq 1 ]]; then
             echo -e "Error multiple file\n"
             _output_files
-            exit 1
         else
-            echo "no"
+            _output_files
+            cat $poi_dir/tmp/$selected_file
         fi
     fi
 }
