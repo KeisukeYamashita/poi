@@ -169,6 +169,11 @@ catPoi(){
     fi
 }
 
+wherePoi(){
+    head=$(cat $poi_dir/refs/HEAD)
+    echo $head
+}
+
 helpPoi() {
     cat <<-shoWHelp
         Name
@@ -255,6 +260,10 @@ main(){
         pui)
             shift
             pui
+            ;;
+        where)
+            shift
+            wherePoi
             ;;
         ls)
             shift
