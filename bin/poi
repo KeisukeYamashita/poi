@@ -15,7 +15,8 @@ _load_poi_config(){
     fi
 }
 
-_parse(){
+_parse()
+{
     while (( "$#" )); do
         case "$1" in
             -*|--*)
@@ -45,7 +46,8 @@ _parse(){
     done
 }
 
-_findFile(){
+_findFile()
+{
     case "$1" in
         help|--help)
             helpLsCommand
@@ -59,7 +61,7 @@ _findFile(){
             title=$2
             shift 2
             ;;
-        --interactive)
+        {,-}-i|--interactive)
             interactive=1
             shift
             ;;
@@ -81,7 +83,8 @@ _findFile(){
     fi
 }
 
-_output_files(){
+_output_files()
+{
     if [[ -z $files ]]; then
         echo "No files found"
         exit 0
@@ -112,14 +115,16 @@ _output_files(){
     fi
 }
 
-poi(){
+poi()
+{
     if [ -z "$title" ]; then
         title=noname
     fi
     filename=$(date +%Y_%m_%d_%H_%M_%S)-$title
 
     while read line; do
-        echo $line >> $poi_dir/tmp/$filename
+        echo "$line" >> $poi_dir/tmp/$filename
+        # clean_line=${line//*,/ }
     done
 
     echo $poi_dir/tmp/$filename > $poi_dir/refs/HEAD
@@ -137,7 +142,8 @@ lsPoi(){
 }
 
 
-catPoi(){
+catPoi()
+{
     case "$1" in
         -*|--*)
             _findFile $@
@@ -214,7 +220,8 @@ helpPoi() {
 shoWHelp
 }
 
-helpPoiCommand(){
+helpPoiCommand()
+{
     cat <<-shoWPoiHelp
         Name
             poi poi - list tmp file
@@ -242,7 +249,8 @@ helpLsCommand(){
 shoWPoiHelp
 }
 
-main(){
+main()
+{
     _load_poi_config
     CMD=${1}
 
