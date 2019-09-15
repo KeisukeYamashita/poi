@@ -24,6 +24,10 @@ _parse()
                 case "$1" in
                     -t|--tag)
                         tags+=(${2})
+                        for tag in $(echo "${2}" | tr ',' "\n");
+                        do
+                            tags+=(${tag})
+                        done
                         ;;
                     --title)
                         title=${2}
