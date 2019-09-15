@@ -2,6 +2,7 @@
 
 readonly root_dir=$(git rev-parse --show-toplevel)
 readonly default_poi_dir=$HOME/.poi
+declare -a tags
 
 _load_poi_config(){
     if [ -z "${POI_DIR}" ]; then
@@ -22,10 +23,10 @@ _parse()
             -*|--*)
                 case "$1" in
                     -t|--tag)
-                        tag=$2
+                        tags+=(${2})
                         ;;
                     --title)
-                        title=$2
+                        title=${2}
                         ;;
                     *)
                         echo "Error: no option ${1}" >&2
@@ -117,6 +118,7 @@ _output_files()
 
 poi()
 {
+    # echo ${tags[*]}
     if [ -z "$title" ]; then
         title=noname
     fi
