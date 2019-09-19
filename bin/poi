@@ -65,7 +65,7 @@ _findFile()
             title=$2
             shift 2
             ;;
-        {,-}-i|--interactive)
+        -i|--interactive)
             interactive=1
             shift
             ;;
@@ -104,10 +104,18 @@ _output_files()
         done
         
         tmp_selected_file=$(cat $poi_dir/refs/$timestamp | fzf)
+        if [[ ! $? -eq 0 ]]; then
+            echo "Canceled selection"
+            exit 1
+        fi
+
         tmp_filename=$(echo $tmp_selected_file | awk '{print $1}')
         tmp_date=$(echo $tmp_selected_file | awk '{print $2}')
         tmp_time=$(echo $tmp_selected_file  | awk '{print $3}')
         selected_file=$(date -jf '%Y/%m/%d %H:%M:%S' "$tmp_date $tmp_time" +%Y_%m_%d_%H_%M_%S)-$tmp_filename
+        cat $poi_dir/refs/$selected_file
+
+        # Erash latest cashe
         rm $poi_dir/refs/$timestamp
     else
         echo -e "Title\tDatetime\t\tFileID\t\t\t\tTags"
