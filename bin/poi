@@ -23,7 +23,6 @@ _parse()
             -*|--*)
                 case "$1" in
                     -t|--tag)
-                        tags+=(${2})
                         for tag in $(echo "${2}" | tr ',' "\n");
                         do
                             tags+=(${tag})
@@ -122,7 +121,6 @@ _output_files()
 
 poi()
 {
-    # echo ${tags[*]}
     if [ -z "$title" ]; then
         title=noname
     fi
@@ -133,7 +131,20 @@ poi()
         # clean_line=${line//*,/ }
     done
 
+    # Create ref files
     echo $poi_dir/tmp/$filename > $poi_dir/refs/HEAD
+
+    objectfilename=""
+    ((index = 0))
+    for i in ${tags[*]}; do
+        if [[ ! $index -eq 0 ]]; then
+            objectfilename+="-"
+        fi
+        objectfilename+=${i}
+        ((index = index + 1))
+    done
+
+    echo $poi_dir/tmp/$objectfilename > $poi_dir/refs/objects
     echo "Poied $title"
 }
 
