@@ -4,7 +4,6 @@ Poi is a useful temporary file manager 🍭🗑⚔️
 
 ```
 $ poi help
-
 Name
     Poi is a useful temporary file manager 🍭 🗑 ⚔️
 
@@ -13,32 +12,52 @@ Synopsis
 
 COMMANDs:
     [Store tmp file]
-        
+
+        curl -s "www.google.com" | poi poi
+
+        [With Title and tags]
         curl -s "www.google.com" | poi poi --title google_page --tag html,google
 
-    [Restore tmp file: command mode]
-
-        poi find SUM_COMMAND google_page
-
-    [Search file: command mode]
-
-        poi find SUM_COMMAND googl
+    [Restore latest file]
     
-    [Search by tag: command mode]
+        poi pui
 
-        poi find SUM_COMMAND html
+    [Show latest file path]
+
+        poi where
+
+    [Show file]
+
+        poi cat FILE_ID
+
+    [Show file]
+
+        poi cat --interactive
+
+    [Search file]
+
+        poi ls 
+
+    [Search file]
+
+        poi ls -i 
     
     [Search by file: interactive mode]
 
-        poi find SUM_COMMAND -i
+        poi ls SUM_COMMAND --interactive
 
-    [Search by tag: interactve mode]
+    [Delete(sweep) cache]
 
-        poi find SUM_COMMAND -i
+        poi sweep
+    
+    [Delete all files]
+
+        poi clean
 
     [Show help]
 
         poi help
+
 ```
 
 ## Usage
@@ -85,6 +104,22 @@ List all temporary files.
 
 ```
 $ poi ls
+```
+
+### Delete all temporary files
+
+Use `sweep` command for delete all files in tmp.
+
+```
+$ poi sweep
+```
+
+### Super delete
+
+Sweep commands does not actually deletes your tmp file. It compresses "sweeped" temporary file and store in another file. To delete, use `clear command`
+
+```
+$ poi clear
 ```
 
 ## Author
