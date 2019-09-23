@@ -352,4 +352,4 @@ main()
     esac
 }
 
-main $@
+main "$@"
