@@ -77,6 +77,16 @@ Show file can be done by the `cat` command.
 $ poi cat FILE_ID
 ```
 
+### List file
+
+#### List all files
+
+List all temporary files.
+
+```
+$ poi ls
+```
+
 ## Author
 
 * KeisukeYamashita
