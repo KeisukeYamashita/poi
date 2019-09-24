@@ -122,6 +122,13 @@ Sweep commands does not actually deletes your tmp file. It compresses "sweeped" 
 $ poi clear
 ```
 
+## Configure variable
+
+Add configure by these command.
+
+* `POI_DIR`: Tmp store path
+    * Default is `$HOME/.poi`
+
 ## Author
 
 * KeisukeYamashita
