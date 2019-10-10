@@ -2,6 +2,8 @@
 
 Poi is a useful temporary file manager 🍭🗑⚔️
 
+This name was inspired by [this library](https://github.com/HideakiTouhara/Poi) .
+
 ```
 $ poi help
 Name
